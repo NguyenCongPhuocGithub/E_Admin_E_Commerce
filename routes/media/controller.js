@@ -72,7 +72,7 @@ module.exports = {
   // },
 
   uploadSingle: (req, res, next) => {
-    const { categoryId } = req.params;
+    const { categoryId } = req.query;
 
     upload.single('image')(req, res, async (err) => {
       try {
