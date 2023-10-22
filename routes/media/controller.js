@@ -111,7 +111,7 @@ module.exports = {
 
         const payload = await media.save();
 
-        return res.status(200).json({ message: "Tải lên thành công", payload });
+        return res.status(200).json({ message: "Upload media successfully", payload });
 
       } catch (error) {
         console.log('««««« error »»»»»', error);
