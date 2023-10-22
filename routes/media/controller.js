@@ -90,7 +90,7 @@ module.exports = {
         await S3.send(
           new PutObjectCommand({
             Body: req.file.buffer,
-            Bucket: 'ecommerce',
+            Bucket: 'phuocdemo',
             Key: fileName,
             ContentType: req.file.mimetype,
           })
@@ -98,7 +98,7 @@ module.exports = {
 
         console.log('««««« Vào đây nè »»»»»', "Vào đây nè");
 
-        const url = `${process.env.ENDPOINT}/ecommerce/${fileName}`
+        const url = `${process.env.ENDPOINT}/phuocdemo/${fileName}`
 
         const media = new Media({
           location: url,
@@ -138,7 +138,7 @@ module.exports = {
         const listFiles = req.files.reduce((prev, file) => {
           prev.push({
             Body: file.buffer,
-            Bucket: 'demobackend',
+            Bucket: 'phuocdemo',
             Key: generateUniqueFileName(file.originalname),
             ContentType: file.mimetype,
           });
@@ -163,7 +163,7 @@ module.exports = {
           }
         }));
 
-        const url = `https://pub-0e73c6f5fc4a489f88372f88f9e09175.r2.dev/demobackend`
+        const url = `https://pub-0e73c6f5fc4a489f88372f88f9e09175.r2.dev/phuocdemo`
 
         const found = await Media.find({ objectId: objid, type: TYPE.SMALL_IMG });
 
