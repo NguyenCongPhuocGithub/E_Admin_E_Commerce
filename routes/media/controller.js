@@ -72,7 +72,9 @@ module.exports = {
   // },
 
   uploadSingle: (req, res, next) => {
-    const { categoryId } = req.query;
+    const { categoryId } = req.params;
+
+    const id = categoryId;
 
     upload.single('image')(req, res, async (err) => {
       try {
@@ -103,7 +105,7 @@ module.exports = {
         const media = new Media({
           location: url,
           name: fileName,
-          categoryId: categoryId,
+          id: categoryId,
           size: req.file.size,
         });
 
