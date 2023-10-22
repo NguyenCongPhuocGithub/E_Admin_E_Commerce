@@ -98,7 +98,7 @@ module.exports = {
 
         console.log('««««« Vào đây nè »»»»»', "Vào đây nè");
 
-        const url = `${process.env.ENDPOINT}/phuocdemo/${fileName}`
+        const url = `${process.env.ENDPOINT}/${fileName}`
 
         const media = new Media({
           location: url,
@@ -111,103 +111,6 @@ module.exports = {
 
         return res.status(200).json({ message: "Tải lên thành công", payload });
 
-      } catch (error) {
-        console.log('««««« error »»»»»', error);
-        return res.status(500).json({ message: "Upload file error", error });
-      }
-    });
-  },
-
-  uploadMultiple: (req, res, next) => {
-    const { objid } = req.params;
-
-    upload.array('images', 4)(req, res, async (err) => {
-      try {
-        if (!req.file) {
-          return res.status(400).json({ message: "No image file provided" });
-        }
-        const S3 = new S3Client({
-          region: 'auto',
-          endpoint: process.env.ENDPOINT,
-          credentials: {
-            accessKeyId: process.env.R2_ACCESS_KEY_ID,
-            secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
-          },
-        });
-
-        const listFiles = req.files.reduce((prev, file) => {
-          prev.push({
-            Body: file.buffer,
-            Bucket: 'phuocdemo',
-            Key: generateUniqueFileName(file.originalname),
-            ContentType: file.mimetype,
-          });
-
-          return prev;
-        }, []);
-
-        await Promise.all(listFiles.map(async (file) => {
-          try {
-            const params = {
-              Body: file.Body,
-              Bucket: file.Bucket,
-              Key: file.Key,
-              ContentType: file.ContentType,
-            };
-
-            await S3.send(new PutObjectCommand(params));
-
-            console.log(`File ${file.Key} uploaded to S3.`);
-          } catch (error) {
-            console.error(`Error uploading file ${file.Key} to S3:`, error);
-          }
-        }));
-
-        const url = `https://pub-0e73c6f5fc4a489f88372f88f9e09175.r2.dev/phuocdemo`
-
-        const found = await Media.find({ objectId: objid, type: TYPE.SMALL_IMG });
-
-        if (found) {
-          await Media.deleteMany(
-            {
-              objectId: objid,
-              type: TYPE.SMALL_IMG,
-            }
-          );
-
-          const dataInsert = listFiles.reduce((prev, file) => {
-            prev.push({
-              name: file.Key,
-              location: `${url}/${file.Key}`,
-              size: file.size,
-              employeeId: req.user._id,
-              objectId: objid,
-              type: TYPE.SMALL_IMG,
-            });
-
-            return prev;
-          }, []);
-
-          let response = await insertDocuments(dataInsert, 'Media');
-
-          return res.status(200).json({ message: "Update thành công", payload: response });
-        } else {
-          const dataInsert = req.files.reduce((prev, file) => {
-            prev.push({
-              name: fileName,
-              location: url,
-              size: file.size,
-              employeeId: req.user._id,
-              objectId: objid,
-              type: TYPE.SMALL_IMG,
-            });
-            return prev;
-          }, []);
-
-          let response = await insertDocuments(dataInsert, 'Media');
-
-          return res.status(200).json({ message: "Tải lên thành công", payload: response });
-        }
       } catch (error) {
         console.log('««««« error »»»»»', error);
         return res.status(500).json({ message: "Upload file error", error });
