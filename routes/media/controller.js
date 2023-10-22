@@ -98,7 +98,7 @@ module.exports = {
 
         console.log('««««« Vào đây nè »»»»»', "Vào đây nè");
 
-        const url = `${process.env.ENDPOINT}/phuocdemo/${fileName}`
+        const url = `${process.env.ENDPOINT}/${fileName}`
 
         const media = new Media({
           location: url,
