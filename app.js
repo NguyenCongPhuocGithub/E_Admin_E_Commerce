@@ -53,7 +53,7 @@ app.use("/customers", passport.authenticate('jwt', { session: false }), customer
 app.use("/suppliers", passport.authenticate('jwt', { session: false }), suppliersRouter);
 app.use("/products", passport.authenticate('jwt', { session: false }), productsRouter);
 app.use("/orders",passport.authenticate('jwt', { session: false }), ordersRouter);
-app.use("/medias",passport.authenticate('jwt', { session: false }), mediasRouter);
+app.use("/medias", mediasRouter);
 
 
 // catch 404 and forward to error handler
